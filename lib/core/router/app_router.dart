@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/orders/presentation/screens/order_detail_screen.dart';
 import '../../features/tracking/presentation/screens/order_tracking_screen.dart';
 import '../../features/orders/presentation/screens/order_success_screen.dart';
 import '../../features/orders/presentation/screens/orders_list_screen.dart';
@@ -150,8 +151,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RoutePaths.orderDetail,
         parentNavigatorKey: rootNavigatorKey,
-        builder: (context, state) => Scaffold(
-          body: Center(child: Text('Order Detail ${state.pathParameters['uuid']}')),
+        builder: (context, state) => OrderDetailScreen(
+          orderUuid: state.pathParameters['uuid'] ?? 'ord_latest',
         ),
       ),
       GoRoute(
