@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
 import 'app_shell.dart';
 import 'route_paths.dart';
@@ -25,9 +26,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       // Auth Routes
       GoRoute(
         path: RoutePaths.login,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Login Screen')),
-        ),
+        builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
         path: RoutePaths.register,
