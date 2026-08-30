@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/restaurant/presentation/screens/restaurant_detail_screen.dart';
 import '../../features/discovery/presentation/screens/search_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/auth/presentation/screens/email_verification_screen.dart';
@@ -105,8 +106,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RoutePaths.restaurantDetail,
         parentNavigatorKey: rootNavigatorKey,
-        builder: (context, state) => Scaffold(
-          body: Center(child: Text('Restaurant ${state.pathParameters['uuid']}')),
+        builder: (context, state) => RestaurantDetailScreen(
+          restaurantUuid: state.pathParameters['uuid'] ?? '',
         ),
       ),
       GoRoute(
