@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/cart/presentation/screens/vouchers_list_screen.dart';
 import '../../features/checkout/presentation/screens/checkout_screen.dart';
 import '../../features/cart/presentation/screens/cart_screen.dart';
 import '../../features/restaurant/presentation/screens/restaurant_detail_screen.dart';
@@ -174,9 +175,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RoutePaths.vouchers,
         parentNavigatorKey: rootNavigatorKey,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Vouchers')),
-        ),
+        builder: (context, state) => const VouchersListScreen(),
       ),
       GoRoute(
         path: RoutePaths.issueReport,
