@@ -7,6 +7,8 @@ import 'api_exceptions.dart';
 import 'auth_interceptor.dart';
 import 'error_mapper.dart';
 
+import 'idempotency_interceptor.dart';
+
 class ApiClient {
   final Dio dio;
 
@@ -25,12 +27,13 @@ class ApiClient {
             },
           ),
         ) {
-    dio.interceptors.add(
+    dio.interceptors.addAll([
+      IdempotencyInterceptor(),
       AuthInterceptor(
         secureStorage: secureStorage,
         dio: dio,
       ),
-    );
+    ]);
   }
 
   Future<dynamic> get(
