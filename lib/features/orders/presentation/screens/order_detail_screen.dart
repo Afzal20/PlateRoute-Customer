@@ -12,6 +12,7 @@ import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/status_pill.dart';
 import '../../domain/models/order_model.dart';
 import '../providers/orders_provider.dart';
+import '../widgets/cancellation_reason_sheet.dart';
 
 final orderDetailProvider = FutureProvider.family<OrderModel, String>((ref, orderUuid) async {
   final repo = ref.watch(orderRepositoryProvider);
@@ -303,6 +304,29 @@ class OrderDetailScreen extends ConsumerWidget {
                 },
               ),
               const SizedBox(height: AppSpacing.s),
+
+              // Cancel Order Button (If active)
+              if (order.isActive) ...[
+                AppButton(
+                  label: 'Cancel Order',
+                  variant: AppButtonVariant.danger,
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+                      shape: const RoundedRectangleBorder(borderRadius: AppSpacing.roundedSheet),
+                      builder: (ctx) => CancellationReasonSheet(
+                        orderUuid: order.uuid,
+                        isPostPreparation: order.status == OrderStatus.preparing ||
+                            order.status == OrderStatus.outForDelivery,
+                        onCancelled: () => ref.refresh(orderDetailProvider(orderUuid)),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: AppSpacing.s),
+              ],
 
               // 6. Review & Rating (If delivered)
               if (order.status == OrderStatus.delivered) ...[
