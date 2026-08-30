@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/review/presentation/screens/review_composer_screen.dart';
 import '../../features/orders/presentation/screens/order_detail_screen.dart';
 import '../../features/tracking/presentation/screens/order_tracking_screen.dart';
 import '../../features/orders/presentation/screens/order_success_screen.dart';
@@ -165,8 +166,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RoutePaths.reviewComposer,
         parentNavigatorKey: rootNavigatorKey,
-        builder: (context, state) => Scaffold(
-          body: Center(child: Text('Review ${state.pathParameters['orderUuid']}')),
+        builder: (context, state) => ReviewComposerScreen(
+          orderUuid: state.pathParameters['orderUuid'] ?? 'ord_latest',
         ),
       ),
       GoRoute(
