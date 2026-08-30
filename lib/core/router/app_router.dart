@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/checkout/presentation/screens/checkout_screen.dart';
 import '../../features/cart/presentation/screens/cart_screen.dart';
 import '../../features/restaurant/presentation/screens/restaurant_detail_screen.dart';
 import '../../features/discovery/presentation/screens/search_screen.dart';
@@ -119,9 +120,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RoutePaths.checkout,
         parentNavigatorKey: rootNavigatorKey,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Checkout Screen')),
-        ),
+        builder: (context, state) => const CheckoutScreen(),
       ),
       GoRoute(
         path: RoutePaths.orderSuccess,
