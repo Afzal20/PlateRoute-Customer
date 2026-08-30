@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/screens/email_verification_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/otp_password_reset_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
 import 'app_shell.dart';
@@ -40,9 +41,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: RoutePaths.forgotPassword,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Forgot Password')),
-        ),
+        builder: (context, state) => const OtpPasswordResetScreen(),
       ),
 
       // Main Shell with 3 Tabs
