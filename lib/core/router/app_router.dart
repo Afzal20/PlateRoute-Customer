@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/chat/presentation/screens/order_chat_screen.dart';
 import '../../features/support/presentation/screens/issue_report_screen.dart';
 import '../../features/review/presentation/screens/review_composer_screen.dart';
 import '../../features/orders/presentation/screens/order_detail_screen.dart';
@@ -160,8 +161,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RoutePaths.orderChat,
         parentNavigatorKey: rootNavigatorKey,
-        builder: (context, state) => Scaffold(
-          body: Center(child: Text('Chat ${state.pathParameters['threadUuid']}')),
+        builder: (context, state) => OrderChatScreen(
+          threadUuid: state.pathParameters['threadUuid'] ?? 'thread_latest',
         ),
       ),
       GoRoute(
