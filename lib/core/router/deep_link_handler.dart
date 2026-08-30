@@ -4,7 +4,6 @@ class DeepLinkHandler {
   static String? handleUri(Uri uri) {
     final host = uri.host;
     final path = uri.path;
-    final fullString = uri.toString();
 
     // 1. Custom scheme: plateroute://restaurant/res_123 or https://plateroute.com/restaurant/res_123
     if (host == 'restaurant' || path.contains('/restaurant/')) {
