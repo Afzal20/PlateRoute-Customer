@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import '../localization/app_localizations.dart';
 import '../theme/app_colors.dart';
 
+import '../widgets/offline_banner.dart';
+
 class AppShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
@@ -24,7 +26,7 @@ class AppShell extends StatelessWidget {
     final l10n = context.l10n;
 
     return Scaffold(
-      body: navigationShell,
+      body: OfflineBanner(child: navigationShell),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
