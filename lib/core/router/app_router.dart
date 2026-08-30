@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/auth/presentation/screens/email_verification_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/otp_password_reset_screen.dart';
@@ -61,9 +62,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: RoutePaths.home,
-                builder: (context, state) => const Scaffold(
-                  body: Center(child: Text('Home Feed')),
-                ),
+                builder: (context, state) => const HomeScreen(),
               ),
             ],
           ),
