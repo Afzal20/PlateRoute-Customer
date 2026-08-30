@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/cart/presentation/screens/cart_screen.dart';
 import '../../features/restaurant/presentation/screens/restaurant_detail_screen.dart';
 import '../../features/discovery/presentation/screens/search_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
@@ -113,9 +114,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RoutePaths.cart,
         parentNavigatorKey: rootNavigatorKey,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Cart Screen')),
-        ),
+        builder: (context, state) => const CartScreen(),
       ),
       GoRoute(
         path: RoutePaths.checkout,
