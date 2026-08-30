@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/orders/presentation/screens/order_success_screen.dart';
 import '../../features/orders/presentation/screens/orders_list_screen.dart';
 import '../../features/cart/presentation/screens/vouchers_list_screen.dart';
 import '../../features/checkout/presentation/screens/checkout_screen.dart';
@@ -125,9 +126,18 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RoutePaths.orderSuccess,
         parentNavigatorKey: rootNavigatorKey,
-        builder: (context, state) => Scaffold(
-          body: Center(child: Text('Order Placed ${state.pathParameters['uuid']}')),
-        ),
+        builder: (context, state) {
+          final uuid = state.pathParameters['uuid'] ?? 'ord_latest';
+          final restaurant = state.uri.queryParameters['restaurant'];
+          final totalStr = state.uri.queryParameters['total'];
+          final total = totalStr != null ? double.tryParse(totalStr) : null;
+
+          return OrderSuccessScreen(
+            orderUuid: uuid,
+            restaurantName: restaurant,
+            totalAmount: total,
+          );
+        },
       ),
       GoRoute(
         path: RoutePaths.liveTracking,
