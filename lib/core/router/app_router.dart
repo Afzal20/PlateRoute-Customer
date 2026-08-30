@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/profile/presentation/screens/security_center_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/address/presentation/screens/address_editor_screen.dart';
 import '../../features/address/presentation/screens/address_management_screen.dart';
@@ -206,9 +207,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RoutePaths.securityCenter,
         parentNavigatorKey: rootNavigatorKey,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Security Center')),
-        ),
+        builder: (context, state) => const SecurityCenterScreen(),
       ),
       GoRoute(
         path: RoutePaths.notificationPreferences,
