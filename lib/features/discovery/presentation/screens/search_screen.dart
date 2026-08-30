@@ -11,6 +11,9 @@ import '../../../../core/widgets/loading_skeleton.dart';
 import '../../../home/presentation/widgets/restaurant_tile.dart';
 import '../providers/search_provider.dart';
 
+import '../widgets/cuisine_pivot_grid.dart';
+import '../widgets/search_filter_sheet.dart';
+
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
 
@@ -33,6 +36,33 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     super.dispose();
   }
 
+  void _showFilterSheet(BuildContext context) {
+    final searchState = ref.read(searchProvider);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? AppColors.surfaceDark
+          : AppColors.surfaceLight,
+      shape: const RoundedRectangleBorder(
+        borderRadius: AppSpacing.roundedSheet,
+      ),
+      builder: (ctx) => SearchFilterSheet(
+        initialCuisine: searchState.selectedCuisine,
+        initialSortBy: searchState.sortBy,
+        initialOpenNow: searchState.openNowOnly,
+        onApply: ({cuisine, sortBy, openNow}) {
+          ref.read(searchProvider.notifier).applyFilter(
+                cuisine: cuisine,
+                sortBy: sortBy,
+                openNowOnly: openNow,
+              );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -48,26 +78,36 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           onPressed: () => context.pop(),
         ),
         titleSpacing: 0,
-        title: Padding(
-          padding: const EdgeInsets.only(right: AppSpacing.screenGutter),
-          child: AppTextField(
-            hintText: l10n.searchPlaceholder,
-            controller: _searchController,
-            autofocus: true,
-            showClearButton: true,
-            prefixIcon: Icon(
-              Icons.search,
-              size: 20,
-              color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
-            ),
-            onChanged: (val) {
-              ref.read(searchProvider.notifier).onQueryChanged(val);
-            },
-            onSubmitted: (val) {
-              ref.read(searchProvider.notifier).executeSearch(val);
-            },
+        title: AppTextField(
+          hintText: l10n.searchPlaceholder,
+          controller: _searchController,
+          autofocus: true,
+          showClearButton: true,
+          prefixIcon: Icon(
+            Icons.search,
+            size: 20,
+            color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
           ),
+          onChanged: (val) {
+            ref.read(searchProvider.notifier).onQueryChanged(val);
+          },
+          onSubmitted: (val) {
+            ref.read(searchProvider.notifier).executeSearch(val);
+          },
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.tune_rounded,
+              color: searchState.selectedCuisine != null || searchState.sortBy != null
+                  ? primaryColor
+                  : (isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight),
+            ),
+            tooltip: l10n.filters,
+            onPressed: () => _showFilterSheet(context),
+          ),
+          const SizedBox(width: 4),
+        ],
       ),
       body: _buildBody(context, searchState, isDark, primaryColor, l10n),
     );
@@ -91,32 +131,44 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     // 2. Search Results
     if (state.query.trim().isNotEmpty) {
       if (state.results.isEmpty) {
-        return Center(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.xxl),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.search_off_outlined,
-                  size: 56,
-                  color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+        return SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.l),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.screenGutter),
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.search_off_outlined,
+                      size: 56,
+                      color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                    ),
+                    const SizedBox(height: AppSpacing.m),
+                    Text(
+                      l10n.noResultsFound,
+                      style: AppTypography.titleSmall,
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      l10n.noResultsSuggestion,
+                      style: AppTypography.bodySmall.copyWith(
+                        color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-                const SizedBox(height: AppSpacing.m),
-                Text(
-                  l10n.noResultsFound,
-                  style: AppTypography.titleSmall,
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  l10n.noResultsSuggestion,
-                  style: AppTypography.bodySmall.copyWith(
-                    color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: AppSpacing.m),
+              CuisinePivotGrid(
+                onPivotSelected: (cuisine) {
+                  _searchController.text = cuisine;
+                  ref.read(searchProvider.notifier).onQueryChanged(cuisine);
+                  ref.read(searchProvider.notifier).executeSearch(cuisine);
+                },
+              ),
+            ],
           ),
         );
       }
