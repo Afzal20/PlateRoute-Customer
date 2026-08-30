@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
 import 'app_shell.dart';
 import 'route_paths.dart';
@@ -30,9 +31,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: RoutePaths.register,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Register Screen')),
-        ),
+        builder: (context, state) => const RegisterScreen(),
       ),
       GoRoute(
         path: RoutePaths.verifyEmail,
