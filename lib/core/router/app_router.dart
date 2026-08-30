@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/support/presentation/screens/support_ticket_detail_screen.dart';
 import '../../features/chat/presentation/screens/order_chat_screen.dart';
 import '../../features/support/presentation/screens/issue_report_screen.dart';
 import '../../features/review/presentation/screens/review_composer_screen.dart';
@@ -201,8 +202,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RoutePaths.supportTicket,
         parentNavigatorKey: rootNavigatorKey,
-        builder: (context, state) => Scaffold(
-          body: Center(child: Text('Support Ticket ${state.pathParameters['uuid']}')),
+        builder: (context, state) => SupportTicketDetailScreen(
+          ticketUuid: state.pathParameters['uuid'] ?? 'ticket_latest',
         ),
       ),
       GoRoute(
