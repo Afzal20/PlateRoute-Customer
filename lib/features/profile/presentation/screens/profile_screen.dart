@@ -9,69 +9,13 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/theme/theme_provider.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
+import '../widgets/language_switcher_sheet.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   void _showLanguageSelector(BuildContext context, WidgetRef ref) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryColor = isDark ? AppColors.primaryDark : AppColors.primaryLight;
-    final currentLocale = ref.read(localeNotifierProvider);
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
-      shape: const RoundedRectangleBorder(borderRadius: AppSpacing.roundedSheet),
-      builder: (ctx) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.screenGutter,
-              vertical: AppSpacing.m,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: AppSpacing.sheetGrabHandleWidth,
-                    height: AppSpacing.sheetGrabHandleHeight,
-                    decoration: BoxDecoration(
-                      color: isDark ? AppColors.borderDark : AppColors.borderLight,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.m),
-                Text('Select Language / ভাষা নির্বাচন করুন', style: AppTypography.titleLarge.copyWith(fontSize: 18)),
-                const SizedBox(height: AppSpacing.m),
-                ListTile(
-                  title: const Text('English (US)'),
-                  trailing: currentLocale.languageCode == 'en'
-                      ? Icon(Icons.check_circle_rounded, color: primaryColor)
-                      : null,
-                  onTap: () {
-                    ref.read(localeNotifierProvider.notifier).setLocale('en');
-                    Navigator.pop(ctx);
-                  },
-                ),
-                ListTile(
-                  title: const Text('বাংলা (Bengali)'),
-                  trailing: currentLocale.languageCode == 'bn'
-                      ? Icon(Icons.check_circle_rounded, color: primaryColor)
-                      : null,
-                  onTap: () {
-                    ref.read(localeNotifierProvider.notifier).setLocale('bn');
-                    Navigator.pop(ctx);
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+    LanguageSwitcherSheet.show(context);
   }
 
   void _confirmSignOut(BuildContext context, WidgetRef ref) {
