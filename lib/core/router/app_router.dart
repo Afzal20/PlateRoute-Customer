@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/auth/presentation/screens/splash_screen.dart';
 import 'app_shell.dart';
 import 'route_paths.dart';
 
@@ -18,9 +19,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       // Splash
       GoRoute(
         path: RoutePaths.splash,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
-        ),
+        builder: (context, state) => const SplashScreen(),
       ),
 
       // Auth Routes
