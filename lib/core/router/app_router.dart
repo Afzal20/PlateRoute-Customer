@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/address/presentation/screens/address_editor_screen.dart';
 import '../../features/address/presentation/screens/address_management_screen.dart';
 import '../../features/support/presentation/screens/support_ticket_detail_screen.dart';
 import '../../features/chat/presentation/screens/order_chat_screen.dart';
@@ -182,9 +183,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RoutePaths.addressEditor,
         parentNavigatorKey: rootNavigatorKey,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Address Editor')),
-        ),
+        builder: (context, state) => const AddressEditorScreen(),
       ),
       GoRoute(
         path: RoutePaths.vouchers,
