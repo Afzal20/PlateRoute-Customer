@@ -11,6 +11,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/status_pill.dart';
 import '../../domain/models/order_model.dart';
+import '../../domain/services/reorder_service.dart';
 import '../providers/orders_provider.dart';
 import '../widgets/cancellation_reason_sheet.dart';
 
@@ -300,7 +301,8 @@ class OrderDetailScreen extends ConsumerWidget {
                 label: 'Reorder All Items',
                 variant: AppButtonVariant.primary,
                 onPressed: () {
-                  context.push(RoutePaths.restaurantDetailUri(order.restaurantUuid));
+                  ReorderService.reorderToCart(ref: ref, order: order);
+                  context.push(RoutePaths.cart);
                 },
               ),
               const SizedBox(height: AppSpacing.s),
