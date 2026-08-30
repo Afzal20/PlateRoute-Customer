@@ -6,7 +6,9 @@ import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/otp_password_reset_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
+import '../../features/auth/presentation/providers/auth_provider.dart';
 import 'app_shell.dart';
+import 'auth_guard.dart';
 import 'route_paths.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'rootNav');
@@ -15,10 +17,13 @@ final ordersTabNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'ordersNav')
 final profileTabNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'profileNav');
 
 final appRouterProvider = Provider<GoRouter>((ref) {
+  final authState = ref.watch(authProvider);
+
   return GoRouter(
     navigatorKey: rootNavigatorKey,
     initialLocation: RoutePaths.splash,
     debugLogDiagnostics: true,
+    redirect: (context, state) => AuthGuard.redirect(context, state, authState),
     routes: [
       // Splash
       GoRoute(
