@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/address/presentation/screens/address_editor_screen.dart';
 import '../../features/address/presentation/screens/address_management_screen.dart';
 import '../../features/support/presentation/screens/support_ticket_detail_screen.dart';
@@ -99,9 +100,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: RoutePaths.profile,
-                builder: (context, state) => const Scaffold(
-                  body: Center(child: Text('Profile')),
-                ),
+                builder: (context, state) => const ProfileScreen(),
               ),
             ],
           ),
