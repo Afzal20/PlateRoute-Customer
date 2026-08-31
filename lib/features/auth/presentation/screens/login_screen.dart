@@ -60,6 +60,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  Future<void> _handleGoogleLogin() async {
+    setState(() => _inlineError = null);
+    final success = await ref.read(authProvider.notifier).loginWithGoogle();
+    if (!mounted) return;
+    if (!success) {
+      setState(() {
+        _inlineError = "Google Login failed.";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -224,6 +235,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     onPressed: _handleLogin,
                   ),
                   const SizedBox(height: AppSpacing.l),
+
+                  Row(
+                    children: [
+                      const Expanded(child: Divider()),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.m),
+                        child: Text(
+                          'OR',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                          ),
+                        ),
+                      ),
+                      const Expanded(child: Divider()),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.l),
+
+                  AppButton.prominent(
+                    label: 'Continue with Google',
+                    variant: AppButtonVariant.secondary,
+                    onPressed: _handleGoogleLogin,
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
 
                   // Register Prompt
                   Row(

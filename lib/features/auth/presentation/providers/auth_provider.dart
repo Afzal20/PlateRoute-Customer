@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_exceptions.dart';
 import '../../data/datasources/auth_remote_data_source.dart';
@@ -32,7 +33,25 @@ final authProvider = StateNotifierProvider<AuthStateNotifier, AuthState>((ref) {
 class AuthStateNotifier extends StateNotifier<AuthState> {
   final AuthRepository _repository;
 
-  AuthStateNotifier(this._repository) : super(const AuthState.initial());
+  AuthStateNotifier(this._repository) : super(const AuthState.initial()) {
+    Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
+      final AuthChangeEvent event = data.event;
+      final Session? session = data.session;
+      if (event == AuthChangeEvent.signedIn && session != null) {
+        state = const AuthState.authenticating();
+        try {
+          final (user, _) = await _repository.loginWithGoogleToken(session.accessToken);
+          if (!user.isEmailVerified && user.email.isNotEmpty) {
+            state = AuthState.emailUnverified(user.email);
+          } else {
+            state = AuthState.authenticated(user);
+          }
+        } catch (e) {
+          state = AuthState.error(e.toString());
+        }
+      }
+    });
+  }
 
   Future<void> checkAuthStatus() async {
     state = const AuthState.authenticating();
@@ -47,6 +66,20 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
       state = const AuthState.unauthenticated();
     } catch (_) {
       state = const AuthState.unauthenticated();
+    }
+  }
+
+  Future<bool> loginWithGoogle() async {
+    state = const AuthState.authenticating();
+    try {
+      final success = await Supabase.instance.client.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: 'plateroutecustomer://login-callback',
+      );
+      return success;
+    } catch (e) {
+      state = AuthState.error(e.toString());
+      return false;
     }
   }
 

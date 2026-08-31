@@ -4,6 +4,7 @@ import '../../domain/models/user_model.dart';
 
 abstract class AuthRepository {
   Future<(UserModel, AuthTokens)> login(LoginRequest request);
+  Future<(UserModel, AuthTokens)> loginWithGoogleToken(String accessToken);
   Future<(UserModel, AuthTokens)> register(RegisterRequest request);
   Future<UserModel> getCurrentProfile();
   Future<void> requestPasswordResetOtp(PasswordResetOtpRequest request);

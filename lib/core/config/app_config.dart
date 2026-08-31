@@ -12,6 +12,8 @@ class AppConfig {
   final String wsBaseUrl;
   final String stripePublishableKey;
   final String sentryDsn;
+  final String supabaseUrl;
+  final String supabaseAnonKey;
   final AppEnvironment environment;
   final bool enableAnalytics;
   final bool isMockFallbackEnabled;
@@ -21,6 +23,8 @@ class AppConfig {
     required this.wsBaseUrl,
     required this.stripePublishableKey,
     required this.sentryDsn,
+    required this.supabaseUrl,
+    required this.supabaseAnonKey,
     required this.environment,
     required this.enableAnalytics,
     required this.isMockFallbackEnabled,
@@ -53,6 +57,8 @@ class AppConfig {
       wsBaseUrl: dotenv.maybeGet('WS_BASE_URL') ?? ApiEndpoints.defaultWsUrl,
       stripePublishableKey: dotenv.maybeGet('STRIPE_PUBLISHABLE_KEY') ?? '',
       sentryDsn: dotenv.maybeGet('SENTRY_DSN') ?? '',
+      supabaseUrl: dotenv.maybeGet('NEXT_PUBLIC_SUPABASE_URL') ?? dotenv.maybeGet('SUPABASE_URL') ?? '',
+      supabaseAnonKey: dotenv.maybeGet('NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY') ?? dotenv.maybeGet('SUPABASE_ANON_KEY') ?? '',
       environment: env,
       enableAnalytics: dotenv.maybeGet('ENABLE_ANALYTICS') == 'true',
       isMockFallbackEnabled: dotenv.maybeGet('ENABLE_MOCK_FALLBACK') != 'false',

@@ -25,6 +25,16 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<(UserModel, AuthTokens)> loginWithGoogleToken(String accessToken) async {
+    final (user, tokens) = await remoteDataSource.loginWithGoogleToken(accessToken);
+    await secureStorage.saveTokens(
+      access: tokens.access,
+      refresh: tokens.refresh,
+    );
+    return (user, tokens);
+  }
+
+  @override
   Future<(UserModel, AuthTokens)> register(RegisterRequest request) async {
     final (user, tokens) = await remoteDataSource.register(request);
     if (tokens.access.isNotEmpty) {

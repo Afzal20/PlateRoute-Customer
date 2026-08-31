@@ -1,5 +1,4 @@
 import 'package:customer/features/cart/domain/models/cart_item_model.dart';
-import 'package:customer/features/cart/domain/models/cart_state.dart';
 import 'package:customer/features/cart/domain/services/price_calculator.dart';
 import 'package:customer/features/cart/presentation/providers/cart_provider.dart';
 import 'package:customer/features/home/domain/models/restaurant_model.dart';

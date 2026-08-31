@@ -6,12 +6,20 @@ import 'core/localization/app_localizations.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Load environment configurations
   await AppConfig.initialize();
+
+  if (AppConfig.instance.supabaseUrl.isNotEmpty && AppConfig.instance.supabaseAnonKey.isNotEmpty) {
+    await Supabase.initialize(
+      url: AppConfig.instance.supabaseUrl,
+      anonKey: AppConfig.instance.supabaseAnonKey,
+    );
+  }
 
   // Set default system overlay style
   SystemChrome.setSystemUIOverlayStyle(
