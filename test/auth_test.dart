@@ -30,6 +30,21 @@ class MockAuthRemoteDataSource implements AuthRemoteDataSource {
   }
 
   @override
+  Future<(UserModel, AuthTokens)> loginWithGoogleToken(String accessToken) async {
+    return (
+      mockUser ??
+          const UserModel(
+            id: '1',
+            email: 'test@example.com',
+            fullName: 'Test User',
+            phoneNumber: '01700000000',
+            isEmailVerified: true,
+          ),
+      mockTokens ?? const AuthTokens(access: 'access_jwt', refresh: 'refresh_jwt'),
+    );
+  }
+
+  @override
   Future<(UserModel, AuthTokens)> register(RegisterRequest request) async {
     return (
       UserModel(
