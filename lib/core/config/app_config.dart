@@ -14,6 +14,7 @@ class AppConfig {
   final String sentryDsn;
   final String supabaseUrl;
   final String supabaseAnonKey;
+  final String googleWebClientId;
   final AppEnvironment environment;
   final bool enableAnalytics;
   final bool isMockFallbackEnabled;
@@ -25,6 +26,7 @@ class AppConfig {
     required this.sentryDsn,
     required this.supabaseUrl,
     required this.supabaseAnonKey,
+    required this.googleWebClientId,
     required this.environment,
     required this.enableAnalytics,
     required this.isMockFallbackEnabled,
@@ -59,6 +61,7 @@ class AppConfig {
       sentryDsn: dotenv.maybeGet('SENTRY_DSN') ?? '',
       supabaseUrl: dotenv.maybeGet('NEXT_PUBLIC_SUPABASE_URL') ?? dotenv.maybeGet('SUPABASE_URL') ?? '',
       supabaseAnonKey: dotenv.maybeGet('NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY') ?? dotenv.maybeGet('SUPABASE_ANON_KEY') ?? '',
+      googleWebClientId: dotenv.maybeGet('GOOGLE_WEB_CLIENT_ID') ?? '',
       environment: env,
       enableAnalytics: dotenv.maybeGet('ENABLE_ANALYTICS') == 'true',
       isMockFallbackEnabled: dotenv.maybeGet('ENABLE_MOCK_FALLBACK') != 'false',

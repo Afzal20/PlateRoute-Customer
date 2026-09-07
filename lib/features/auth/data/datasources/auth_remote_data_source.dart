@@ -34,10 +34,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<(UserModel, AuthTokens)> loginWithGoogleToken(String accessToken) async {
+  Future<(UserModel, AuthTokens)> loginWithGoogleToken(String idToken) async {
     final response = await _apiClient.post(
       '/api/auth/google/login/',
-      data: {'access_token': accessToken},
+      data: {'id_token': idToken},
     );
 
     final data = response as Map<String, dynamic>;

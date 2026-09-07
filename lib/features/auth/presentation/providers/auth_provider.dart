@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import '../../../../core/config/app_config.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_exceptions.dart';
 import '../../data/datasources/auth_remote_data_source.dart';
@@ -33,25 +34,7 @@ final authProvider = StateNotifierProvider<AuthStateNotifier, my_auth.AuthState>
 class AuthStateNotifier extends StateNotifier<my_auth.AuthState> {
   final AuthRepository _repository;
 
-  AuthStateNotifier(this._repository) : super(const my_auth.AuthState.initial()) {
-    Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
-      final AuthChangeEvent event = data.event;
-      final Session? session = data.session;
-      if (event == AuthChangeEvent.signedIn && session != null) {
-        state = const my_auth.AuthState.authenticating();
-        try {
-          final (user, _) = await _repository.loginWithGoogleToken(session.accessToken);
-          if (!user.isEmailVerified && user.email.isNotEmpty) {
-            state = my_auth.AuthState.emailUnverified(user.email);
-          } else {
-            state = my_auth.AuthState.authenticated(user);
-          }
-        } catch (e) {
-          state = my_auth.AuthState.error(e.toString());
-        }
-      }
-    });
-  }
+  AuthStateNotifier(this._repository) : super(const my_auth.AuthState.initial());
 
   Future<void> checkAuthStatus() async {
     state = const my_auth.AuthState.authenticating();
@@ -69,14 +52,30 @@ class AuthStateNotifier extends StateNotifier<my_auth.AuthState> {
     }
   }
 
+  /// Direct DRF Google SSO (no Supabase): interactive Google sign-in gives
+  /// an ID token, the backend verifies it and returns our JWT pair.
   Future<bool> loginWithGoogle() async {
     state = const my_auth.AuthState.authenticating();
     try {
-      final success = await Supabase.instance.client.auth.signInWithOAuth(
-        OAuthProvider.google,
-        redirectTo: 'plateroutecustomer://login-callback',
-      );
-      return success;
+      final serverClientId = AppConfig.instance.googleWebClientId;
+      if (serverClientId.isEmpty) {
+        state = const my_auth.AuthState.error('Google sign-in is not configured.');
+        return false;
+      }
+      await GoogleSignIn.instance.initialize(serverClientId: serverClientId);
+      final account = await GoogleSignIn.instance.authenticate();
+      final idToken = account.authentication.idToken;
+      if (idToken == null || idToken.isEmpty) {
+        state = const my_auth.AuthState.error('Google Login failed.');
+        return false;
+      }
+      final (user, _) = await _repository.loginWithGoogleToken(idToken);
+      if (!user.isEmailVerified && user.email.isNotEmpty) {
+        state = my_auth.AuthState.emailUnverified(user.email);
+      } else {
+        state = my_auth.AuthState.authenticated(user);
+      }
+      return true;
     } catch (e) {
       state = my_auth.AuthState.error(e.toString());
       return false;
