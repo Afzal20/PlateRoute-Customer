@@ -17,7 +17,7 @@ void main() async {
   if (AppConfig.instance.supabaseUrl.isNotEmpty && AppConfig.instance.supabaseAnonKey.isNotEmpty) {
     await Supabase.initialize(
       url: AppConfig.instance.supabaseUrl,
-      anonKey: AppConfig.instance.supabaseAnonKey,
+      publishableKey: AppConfig.instance.supabaseAnonKey,
     );
   }
 

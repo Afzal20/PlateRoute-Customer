@@ -5,7 +5,7 @@ import '../../../../core/network/api_exceptions.dart';
 import '../../data/datasources/auth_remote_data_source.dart';
 import '../../data/repositories/auth_repository_impl.dart';
 import '../../domain/models/auth_requests.dart';
-import '../../domain/models/auth_state.dart';
+import '../../domain/models/auth_state.dart' as my_auth;
 import '../../domain/repositories/auth_repository.dart';
 
 // Auth Remote Data Source Provider
@@ -25,52 +25,52 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 });
 
 // Auth State Provider
-final authProvider = StateNotifierProvider<AuthStateNotifier, AuthState>((ref) {
+final authProvider = StateNotifierProvider<AuthStateNotifier, my_auth.AuthState>((ref) {
   final repository = ref.watch(authRepositoryProvider);
   return AuthStateNotifier(repository);
 });
 
-class AuthStateNotifier extends StateNotifier<AuthState> {
+class AuthStateNotifier extends StateNotifier<my_auth.AuthState> {
   final AuthRepository _repository;
 
-  AuthStateNotifier(this._repository) : super(const AuthState.initial()) {
+  AuthStateNotifier(this._repository) : super(const my_auth.AuthState.initial()) {
     Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
       final AuthChangeEvent event = data.event;
       final Session? session = data.session;
       if (event == AuthChangeEvent.signedIn && session != null) {
-        state = const AuthState.authenticating();
+        state = const my_auth.AuthState.authenticating();
         try {
           final (user, _) = await _repository.loginWithGoogleToken(session.accessToken);
           if (!user.isEmailVerified && user.email.isNotEmpty) {
-            state = AuthState.emailUnverified(user.email);
+            state = my_auth.AuthState.emailUnverified(user.email);
           } else {
-            state = AuthState.authenticated(user);
+            state = my_auth.AuthState.authenticated(user);
           }
         } catch (e) {
-          state = AuthState.error(e.toString());
+          state = my_auth.AuthState.error(e.toString());
         }
       }
     });
   }
 
   Future<void> checkAuthStatus() async {
-    state = const AuthState.authenticating();
+    state = const my_auth.AuthState.authenticating();
     try {
       final user = await _repository.getCurrentProfile();
       if (!user.isEmailVerified && user.email.isNotEmpty) {
-        state = AuthState.emailUnverified(user.email);
+        state = my_auth.AuthState.emailUnverified(user.email);
       } else {
-        state = AuthState.authenticated(user);
+        state = my_auth.AuthState.authenticated(user);
       }
     } on UnauthorizedException {
-      state = const AuthState.unauthenticated();
+      state = const my_auth.AuthState.unauthenticated();
     } catch (_) {
-      state = const AuthState.unauthenticated();
+      state = const my_auth.AuthState.unauthenticated();
     }
   }
 
   Future<bool> loginWithGoogle() async {
-    state = const AuthState.authenticating();
+    state = const my_auth.AuthState.authenticating();
     try {
       final success = await Supabase.instance.client.auth.signInWithOAuth(
         OAuthProvider.google,
@@ -78,7 +78,7 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
       );
       return success;
     } catch (e) {
-      state = AuthState.error(e.toString());
+      state = my_auth.AuthState.error(e.toString());
       return false;
     }
   }
@@ -87,24 +87,24 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
     required String email,
     required String password,
   }) async {
-    state = const AuthState.authenticating();
+    state = const my_auth.AuthState.authenticating();
     try {
       final (user, _) = await _repository.login(
         LoginRequest(email: email, password: password),
       );
 
       if (!user.isEmailVerified && user.email.isNotEmpty) {
-        state = AuthState.emailUnverified(user.email);
+        state = my_auth.AuthState.emailUnverified(user.email);
         return false;
       }
 
-      state = AuthState.authenticated(user);
+      state = my_auth.AuthState.authenticated(user);
       return true;
     } on ApiException catch (e) {
-      state = AuthState.error(e.message);
+      state = my_auth.AuthState.error(e.message);
       return false;
     } catch (e) {
-      state = AuthState.error(e.toString());
+      state = my_auth.AuthState.error(e.toString());
       return false;
     }
   }
@@ -115,7 +115,7 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
     required String fullName,
     required String phoneNumber,
   }) async {
-    state = const AuthState.authenticating();
+    state = const my_auth.AuthState.authenticating();
     try {
       final (user, tokens) = await _repository.register(
         RegisterRequest(
@@ -127,17 +127,17 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
       );
 
       if (!user.isEmailVerified && tokens.access.isEmpty) {
-        state = AuthState.emailUnverified(email);
+        state = my_auth.AuthState.emailUnverified(email);
         return true;
       }
 
-      state = AuthState.authenticated(user);
+      state = my_auth.AuthState.authenticated(user);
       return true;
     } on ApiException catch (e) {
-      state = AuthState.error(e.message);
+      state = my_auth.AuthState.error(e.message);
       return false;
     } catch (e) {
-      state = AuthState.error(e.toString());
+      state = my_auth.AuthState.error(e.toString());
       return false;
     }
   }
@@ -173,8 +173,8 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> logout() async {
-    state = const AuthState.authenticating();
+    state = const my_auth.AuthState.authenticating();
     await _repository.logout();
-    state = const AuthState.unauthenticated();
+    state = const my_auth.AuthState.unauthenticated();
   }
 }
