@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
+
 class ApiEndpoints {
   // Base URLs (can be overridden by environment)
-  static const String defaultBaseUrl = 'http://10.0.2.2:8000'; // Android emulator localhost
-  static const String defaultWsUrl = 'ws://10.0.2.2:8000';
+  static String get defaultBaseUrl => kIsWeb ? 'http://localhost:8000' : 'http://10.0.2.2:8000';
+  static String get defaultWsUrl => kIsWeb ? 'ws://localhost:8000' : 'ws://10.0.2.2:8000';
 
   // Auth Endpoints
   static const String login = '/api/auth/login/';
