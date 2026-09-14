@@ -225,7 +225,9 @@ class _ItemCustomizationSheetState extends State<ItemCustomizationSheet> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
-                                color: isSelected ? AppColors.primary : Colors.transparent,
+                                color: isSelected
+                                    ? (isDark ? AppColors.primaryDark : AppColors.primaryLight)
+                                    : Colors.transparent,
                                 width: 2,
                               ),
                             ),
