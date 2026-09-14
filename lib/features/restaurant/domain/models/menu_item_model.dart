@@ -104,6 +104,8 @@ class MenuItemModel {
   final double price;
   final double? originalPrice;
   final String imageUrl;
+  final List<String> extraImages;
+  final String? localImageUrl;
   final bool isAvailable;
   final bool isPopular;
   final List<OptionGroupModel> optionGroups;
@@ -118,6 +120,8 @@ class MenuItemModel {
     required this.price,
     this.originalPrice,
     required this.imageUrl,
+    this.extraImages = const [],
+    this.localImageUrl,
     this.isAvailable = true,
     this.isPopular = false,
     this.optionGroups = const [],
@@ -125,6 +129,11 @@ class MenuItemModel {
   });
 
   bool get hasCustomizations => optionGroups.isNotEmpty;
+
+  List<String> get allImages => [
+    if (imageUrl.isNotEmpty) imageUrl,
+    ...extraImages.where((img) => img.isNotEmpty && img != imageUrl),
+  ];
 
   factory MenuItemModel.fromJson(Map<String, dynamic> json, {String restaurantUuid = ''}) {
     final rawGroups = json['option_groups'] ?? json['groups'];
@@ -137,6 +146,14 @@ class MenuItemModel {
       }
     }
 
+    final rawExtraImages = json['extra_images'];
+    final List<String> extraImages = [];
+    if (rawExtraImages is List) {
+      for (final e in rawExtraImages) {
+        if (e != null) extraImages.add(e.toString());
+      }
+    }
+
     return MenuItemModel(
       id: (json['id'] ?? json['uuid'] ?? '').toString(),
       uuid: (json['uuid'] ?? json['id'] ?? '').toString(),
@@ -146,6 +163,8 @@ class MenuItemModel {
       price: (json['price'] ?? 0.0).toDouble(),
       originalPrice: json['original_price'] != null ? (json['original_price'] as num).toDouble() : null,
       imageUrl: (json['image_url'] ?? json['image'] ?? '').toString(),
+      extraImages: extraImages,
+      localImageUrl: json['local_image_url'] as String?,
       isAvailable: json['is_available'] != false && json['available'] != false,
       isPopular: json['is_popular'] == true || json['popular'] == true,
       optionGroups: groups,
@@ -163,6 +182,8 @@ class MenuItemModel {
       'price': price,
       'original_price': originalPrice,
       'image_url': imageUrl,
+      'extra_images': extraImages,
+      if (localImageUrl != null) 'local_image_url': localImageUrl,
       'is_available': isAvailable,
       'is_popular': isPopular,
       'option_groups': optionGroups.map((e) => e.toJson()).toList(),

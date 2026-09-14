@@ -44,10 +44,12 @@ class _ItemCustomizationSheetState extends State<ItemCustomizationSheet> {
   int _quantity = 1;
   final Map<String, List<OptionItemModel>> _selectedOptions = {};
   late final TextEditingController _instructionsController;
+  late String _currentImageUrl;
 
   @override
   void initState() {
     super.initState();
+    _currentImageUrl = widget.item.imageUrl;
     _instructionsController = TextEditingController();
     _initDefaultSelections();
   }
@@ -192,7 +194,7 @@ class _ItemCustomizationSheetState extends State<ItemCustomizationSheet> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: CachedNetworkImage(
-                        imageUrl: widget.item.imageUrl,
+                        imageUrl: _currentImageUrl,
                         width: 84,
                         height: 84,
                         fit: BoxFit.cover,
@@ -205,6 +207,42 @@ class _ItemCustomizationSheetState extends State<ItemCustomizationSheet> {
                     ),
                   ],
                 ),
+                if (widget.item.allImages.length > 1) ...[
+                  const SizedBox(height: AppSpacing.s),
+                  SizedBox(
+                    height: 44,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: widget.item.allImages.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.xs),
+                      itemBuilder: (context, index) {
+                        final img = widget.item.allImages[index];
+                        final isSelected = img == _currentImageUrl;
+                        return GestureDetector(
+                          onTap: () => setState(() => _currentImageUrl = img),
+                          child: Container(
+                            width: 44,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: isSelected ? AppColors.primary : Colors.transparent,
+                                width: 2,
+                              ),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(6),
+                              child: CachedNetworkImage(
+                                imageUrl: img,
+                                fit: BoxFit.cover,
+                                errorWidget: (_, __, ___) => const Icon(Icons.fastfood, size: 16),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
                 const SizedBox(height: AppSpacing.m),
                 const Divider(),
 
